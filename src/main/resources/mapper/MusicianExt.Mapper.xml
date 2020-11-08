@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.MusicianExtRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> musician </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            id, 
+            chinese_name, 
+            english_name, 
+            avatar, 
+            profile, 
+            create_time
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.Musician">
+        <id column="id" property="id"/>
+        <result column="chinese_name" property="chineseName"/>
+        <result column="english_name" property="englishName"/>
+        <result column="avatar" property="avatar"/>
+        <result column="profile" property="profile"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+</mapper>

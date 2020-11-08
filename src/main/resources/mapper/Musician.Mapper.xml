@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.MusicianRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> `musician` </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            `id`, 
+            `chinese_name`, 
+            `english_name`, 
+            `avatar`, 
+            `profile`, 
+            `create_time`
+    </sql>
+    <!-- 查询语句 -->
+    <sql id="condition_sql">
+                <if test="id != null">
+                    and `id` = #{id}
+                </if>
+                <if test="chineseName != null and chineseName != ''">
+                    and `chinese_name` = #{chineseName}
+                </if>
+                <if test="englishName != null and englishName != ''">
+                    and `english_name` = #{englishName}
+                </if>
+                <if test="avatar != null and avatar != ''">
+                    and `avatar` = #{avatar}
+                </if>
+                <if test="profile != null and profile != ''">
+                    and `profile` = #{profile}
+                </if>
+                <if test="createTimeStart != null">
+                    and `create_time` <![CDATA[ >]]>= #{createTimeStart}
+                </if>
+                <if test="createTimeEnd != null">
+                    and `create_time` <![CDATA[ <]]>= #{createTimeEnd}
+                </if>
+    </sql>
+    <!-- EntityCondition查询语句 -->
+    <sql id="select_condition_sql">
+        <foreach collection="criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+    <!-- UpdateCondition查询语句 -->
+    <sql id="update_condition_sql">
+        <foreach collection="condition.criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.Musician">
+        <id column="id" property="id"/>
+                <result column="chinese_name" property="chineseName"/>
+                <result column="english_name" property="englishName"/>
+                <result column="avatar" property="avatar"/>
+                <result column="profile" property="profile"/>
+                <result column="create_time" property="createTime"/>
+    </resultMap>
+    <!-- 全字段新增 -->
+    <insert id="insert" parameterType="cn.yesway.music.entity.Musician" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{id},
+                #{chineseName},
+                #{englishName},
+                #{avatar},
+                #{profile},
+                #{createTime},
+        </trim>
+    </insert>
+
+    <!-- 非空字段新增 -->
+    <insert id="insertSelective" parameterType="cn.yesway.music.entity.Musician" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        `id`,
+                    </if>
+                    <if test="chineseName != null and chineseName != ''">
+                        `chinese_name`,
+                    </if>
+                    <if test="englishName != null and englishName != ''">
+                        `english_name`,
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        `avatar`,
+                    </if>
+                    <if test="profile != null and profile != ''">
+                        `profile`,
+                    </if>
+                    <if test="createTime != null">
+                        `create_time`,
+                    </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        #{id},
+                    </if>
+                    <if test="chineseName != null and chineseName != ''">
+                        #{chineseName},
+                    </if>
+                    <if test="englishName != null and englishName != ''">
+                        #{englishName},
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        #{avatar},
+                    </if>
+                    <if test="profile != null and profile != ''">
+                        #{profile},
+                    </if>
+                    <if test="createTime != null">
+                        #{createTime},
+                    </if>
+        </trim>
+    </insert>
+
+    <!-- 全字段批量新增 -->
+    <insert id="insertBatch" parameterType="cn.yesway.music.entity.Musician">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                    #{item.id},
+                    #{item.chineseName},
+                    #{item.englishName},
+                    #{item.avatar},
+                    #{item.profile},
+                    #{item.createTime},
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 非空字段批量新增 -->
+    <insert id="insertBatchSelective" parameterType="cn.yesway.music.entity.Musician">
+        insert into
+        <include refid="table_name"/>
+        <foreach collection="list" item="item" open=" " close="" separator="," index="index">
+            <if test="index == 0">
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                            <if test="item.id != null">
+                                `id`,
+                            </if>
+                            <if test="item.chineseName != null and item.chineseName != ''">
+                                `chinese_name`,
+                            </if>
+                            <if test="item.englishName != null and item.englishName != ''">
+                                `english_name`,
+                            </if>
+                            <if test="item.avatar != null and item.avatar != ''">
+                                `avatar`,
+                            </if>
+                            <if test="item.profile != null and item.profile != ''">
+                                `profile`,
+                            </if>
+                            <if test="item.createTime != null">
+                                `create_time`,
+                            </if>
+                </trim>
+            </if>
+        </foreach>
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="item.id != null">
+                            #{item.id},
+                        </if>
+                        <if test="item.chineseName != null and item.chineseName != ''">
+                            #{item.chineseName},
+                        </if>
+                        <if test="item.englishName != null and item.englishName != ''">
+                            #{item.englishName},
+                        </if>
+                        <if test="item.avatar != null and item.avatar != ''">
+                            #{item.avatar},
+                        </if>
+                        <if test="item.profile != null and item.profile != ''">
+                            #{item.profile},
+                        </if>
+                        <if test="item.createTime != null">
+                            #{item.createTime},
+                        </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 根据Id全字段修改 -->
+    <update id="updateByPrimaryKey" parameterType="cn.yesway.music.entity.Musician">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `chinese_name` = #{chineseName},
+                    `english_name` = #{englishName},
+                    `avatar` = #{avatar},
+                    `profile` = #{profile},
+                    `create_time` = #{createTime}
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据Id非空字段修改 -->
+    <update id="updateByPrimaryKeySelective" parameterType="cn.yesway.music.entity.Musician">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="chineseName != null and chineseName != ''">
+                        `chinese_name` = #{chineseName},
+                    </if>
+                    <if test="englishName != null and englishName != ''">
+                        `english_name` = #{englishName},
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        `avatar` = #{avatar},
+                    </if>
+                    <if test="profile != null and profile != ''">
+                        `profile` = #{profile},
+                    </if>
+                    <if test="createTime != null">
+                        `create_time` = #{createTime}
+                    </if>
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据条件全字段修改 -->
+    <update id="updateByCondition" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `chinese_name` = #{entity.chineseName},
+                    `english_name` = #{entity.englishName},
+                    `avatar` = #{entity.avatar},
+                    `profile` = #{entity.profile},
+                    `create_time` = #{entity.createTime}
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据条件非空字段修改 -->
+    <update id="updateByConditionSelective" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="entity.chineseName != null and entity.chineseName != ''">
+                        `chinese_name` = #{entity.chineseName},
+                    </if>
+                    <if test="entity.englishName != null and entity.englishName != ''">
+                        `english_name` = #{entity.englishName},
+                    </if>
+                    <if test="entity.avatar != null and entity.avatar != ''">
+                        `avatar` = #{entity.avatar},
+                    </if>
+                    <if test="entity.profile != null and entity.profile != ''">
+                        `profile` = #{entity.profile},
+                    </if>
+                    <if test="entity.createTime != null">
+                        `create_time` = #{entity.createTime}
+                    </if>
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </delete>
+
+    <!-- 根据主键批量删除 -->
+    <delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 根据条件删除 -->
+    <delete id="deleteByCondition" parameterType="cn.yesway.music.entity.MusicianCondition">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </delete>
+
+    <!-- 根据主键查找 -->
+    <select id="selectByPrimaryKey" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </select>
+
+    <!-- 根据多个主键查找 -->
+    <select id="selectByPrimaryKeys" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+
+    <!-- 根据查询条件查找 -->
+    <select id="selectByCondition" resultMap="resultMap" parameterType="cn.yesway.music.entity.MusicianCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+        <if test="orderBy != null and orderBy != ''" >
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <!-- 根据查询条件查询数量 -->
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="cn.yesway.music.entity.MusicianCondition">
+        select count(0) from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </select>
+
+</mapper>

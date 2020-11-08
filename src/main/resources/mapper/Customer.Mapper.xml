@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.CustomerRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> `customer` </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            `id`, 
+            `phone_number`, 
+            `birthday`, 
+            `gender`, 
+            `nick_name`, 
+            `avatar`, 
+            `create_time`, 
+            `login_time`
+    </sql>
+    <!-- 查询语句 -->
+    <sql id="condition_sql">
+                <if test="id != null">
+                    and `id` = #{id}
+                </if>
+                <if test="phoneNumber != null and phoneNumber != ''">
+                    and `phone_number` = #{phoneNumber}
+                </if>
+                <if test="birthdayStart != null">
+                    and `birthday` <![CDATA[ >]]>= #{birthdayStart}
+                </if>
+                <if test="birthdayEnd != null">
+                    and `birthday` <![CDATA[ <]]>= #{birthdayEnd}
+                </if>
+                <if test="gender != null">
+                    and `gender` = #{gender}
+                </if>
+                <if test="nickName != null and nickName != ''">
+                    and `nick_name` = #{nickName}
+                </if>
+                <if test="avatar != null and avatar != ''">
+                    and `avatar` = #{avatar}
+                </if>
+                <if test="createTimeStart != null">
+                    and `create_time` <![CDATA[ >]]>= #{createTimeStart}
+                </if>
+                <if test="createTimeEnd != null">
+                    and `create_time` <![CDATA[ <]]>= #{createTimeEnd}
+                </if>
+                <if test="loginTimeStart != null">
+                    and `login_time` <![CDATA[ >]]>= #{loginTimeStart}
+                </if>
+                <if test="loginTimeEnd != null">
+                    and `login_time` <![CDATA[ <]]>= #{loginTimeEnd}
+                </if>
+    </sql>
+    <!-- EntityCondition查询语句 -->
+    <sql id="select_condition_sql">
+        <foreach collection="criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+    <!-- UpdateCondition查询语句 -->
+    <sql id="update_condition_sql">
+        <foreach collection="condition.criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.Customer">
+        <id column="id" property="id"/>
+                <result column="phone_number" property="phoneNumber"/>
+                <result column="birthday" property="birthday"/>
+                <result column="gender" property="gender"/>
+                <result column="nick_name" property="nickName"/>
+                <result column="avatar" property="avatar"/>
+                <result column="create_time" property="createTime"/>
+                <result column="login_time" property="loginTime"/>
+    </resultMap>
+    <!-- 全字段新增 -->
+    <insert id="insert" parameterType="cn.yesway.music.entity.Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{id},
+                #{phoneNumber},
+                #{birthday},
+                #{gender},
+                #{nickName},
+                #{avatar},
+                #{createTime},
+                #{loginTime},
+        </trim>
+    </insert>
+
+    <!-- 非空字段新增 -->
+    <insert id="insertSelective" parameterType="cn.yesway.music.entity.Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        `id`,
+                    </if>
+                    <if test="phoneNumber != null and phoneNumber != ''">
+                        `phone_number`,
+                    </if>
+                    <if test="birthday != null">
+                        `birthday`,
+                    </if>
+                    <if test="gender != null">
+                        `gender`,
+                    </if>
+                    <if test="nickName != null and nickName != ''">
+                        `nick_name`,
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        `avatar`,
+                    </if>
+                    <if test="createTime != null">
+                        `create_time`,
+                    </if>
+                    <if test="loginTime != null">
+                        `login_time`,
+                    </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        #{id},
+                    </if>
+                    <if test="phoneNumber != null and phoneNumber != ''">
+                        #{phoneNumber},
+                    </if>
+                    <if test="birthday != null">
+                        #{birthday},
+                    </if>
+                    <if test="gender != null">
+                        #{gender},
+                    </if>
+                    <if test="nickName != null and nickName != ''">
+                        #{nickName},
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        #{avatar},
+                    </if>
+                    <if test="createTime != null">
+                        #{createTime},
+                    </if>
+                    <if test="loginTime != null">
+                        #{loginTime},
+                    </if>
+        </trim>
+    </insert>
+
+    <!-- 全字段批量新增 -->
+    <insert id="insertBatch" parameterType="cn.yesway.music.entity.Customer">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                    #{item.id},
+                    #{item.phoneNumber},
+                    #{item.birthday},
+                    #{item.gender},
+                    #{item.nickName},
+                    #{item.avatar},
+                    #{item.createTime},
+                    #{item.loginTime},
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 非空字段批量新增 -->
+    <insert id="insertBatchSelective" parameterType="cn.yesway.music.entity.Customer">
+        insert into
+        <include refid="table_name"/>
+        <foreach collection="list" item="item" open=" " close="" separator="," index="index">
+            <if test="index == 0">
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                            <if test="item.id != null">
+                                `id`,
+                            </if>
+                            <if test="item.phoneNumber != null and item.phoneNumber != ''">
+                                `phone_number`,
+                            </if>
+                            <if test="item.birthday != null">
+                                `birthday`,
+                            </if>
+                            <if test="item.gender != null">
+                                `gender`,
+                            </if>
+                            <if test="item.nickName != null and item.nickName != ''">
+                                `nick_name`,
+                            </if>
+                            <if test="item.avatar != null and item.avatar != ''">
+                                `avatar`,
+                            </if>
+                            <if test="item.createTime != null">
+                                `create_time`,
+                            </if>
+                            <if test="item.loginTime != null">
+                                `login_time`,
+                            </if>
+                </trim>
+            </if>
+        </foreach>
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="item.id != null">
+                            #{item.id},
+                        </if>
+                        <if test="item.phoneNumber != null and item.phoneNumber != ''">
+                            #{item.phoneNumber},
+                        </if>
+                        <if test="item.birthday != null">
+                            #{item.birthday},
+                        </if>
+                        <if test="item.gender != null">
+                            #{item.gender},
+                        </if>
+                        <if test="item.nickName != null and item.nickName != ''">
+                            #{item.nickName},
+                        </if>
+                        <if test="item.avatar != null and item.avatar != ''">
+                            #{item.avatar},
+                        </if>
+                        <if test="item.createTime != null">
+                            #{item.createTime},
+                        </if>
+                        <if test="item.loginTime != null">
+                            #{item.loginTime},
+                        </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 根据Id全字段修改 -->
+    <update id="updateByPrimaryKey" parameterType="cn.yesway.music.entity.Customer">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `phone_number` = #{phoneNumber},
+                    `birthday` = #{birthday},
+                    `gender` = #{gender},
+                    `nick_name` = #{nickName},
+                    `avatar` = #{avatar},
+                    `create_time` = #{createTime},
+                    `login_time` = #{loginTime}
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据Id非空字段修改 -->
+    <update id="updateByPrimaryKeySelective" parameterType="cn.yesway.music.entity.Customer">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="phoneNumber != null and phoneNumber != ''">
+                        `phone_number` = #{phoneNumber},
+                    </if>
+                    <if test="birthday != null">
+                        `birthday` = #{birthday},
+                    </if>
+                    <if test="gender != null">
+                        `gender` = #{gender},
+                    </if>
+                    <if test="nickName != null and nickName != ''">
+                        `nick_name` = #{nickName},
+                    </if>
+                    <if test="avatar != null and avatar != ''">
+                        `avatar` = #{avatar},
+                    </if>
+                    <if test="createTime != null">
+                        `create_time` = #{createTime},
+                    </if>
+                    <if test="loginTime != null">
+                        `login_time` = #{loginTime}
+                    </if>
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据条件全字段修改 -->
+    <update id="updateByCondition" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `phone_number` = #{entity.phoneNumber},
+                    `birthday` = #{entity.birthday},
+                    `gender` = #{entity.gender},
+                    `nick_name` = #{entity.nickName},
+                    `avatar` = #{entity.avatar},
+                    `create_time` = #{entity.createTime},
+                    `login_time` = #{entity.loginTime}
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据条件非空字段修改 -->
+    <update id="updateByConditionSelective" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="entity.phoneNumber != null and entity.phoneNumber != ''">
+                        `phone_number` = #{entity.phoneNumber},
+                    </if>
+                    <if test="entity.birthday != null">
+                        `birthday` = #{entity.birthday},
+                    </if>
+                    <if test="entity.gender != null">
+                        `gender` = #{entity.gender},
+                    </if>
+                    <if test="entity.nickName != null and entity.nickName != ''">
+                        `nick_name` = #{entity.nickName},
+                    </if>
+                    <if test="entity.avatar != null and entity.avatar != ''">
+                        `avatar` = #{entity.avatar},
+                    </if>
+                    <if test="entity.createTime != null">
+                        `create_time` = #{entity.createTime},
+                    </if>
+                    <if test="entity.loginTime != null">
+                        `login_time` = #{entity.loginTime}
+                    </if>
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </delete>
+
+    <!-- 根据主键批量删除 -->
+    <delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 根据条件删除 -->
+    <delete id="deleteByCondition" parameterType="cn.yesway.music.entity.CustomerCondition">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </delete>
+
+    <!-- 根据主键查找 -->
+    <select id="selectByPrimaryKey" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </select>
+
+    <!-- 根据多个主键查找 -->
+    <select id="selectByPrimaryKeys" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+
+    <!-- 根据查询条件查找 -->
+    <select id="selectByCondition" resultMap="resultMap" parameterType="cn.yesway.music.entity.CustomerCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+        <if test="orderBy != null and orderBy != ''" >
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <!-- 根据查询条件查询数量 -->
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="cn.yesway.music.entity.CustomerCondition">
+        select count(0) from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.FavoriteRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> `favorite` </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            `id`, 
+            `customer_id`, 
+            `music_id`, 
+            `create_time`
+    </sql>
+    <!-- 查询语句 -->
+    <sql id="condition_sql">
+                <if test="id != null">
+                    and `id` = #{id}
+                </if>
+                <if test="customerId != null">
+                    and `customer_id` = #{customerId}
+                </if>
+                <if test="musicId != null">
+                    and `music_id` = #{musicId}
+                </if>
+                <if test="createTimeStart != null">
+                    and `create_time` <![CDATA[ >]]>= #{createTimeStart}
+                </if>
+                <if test="createTimeEnd != null">
+                    and `create_time` <![CDATA[ <]]>= #{createTimeEnd}
+                </if>
+    </sql>
+    <!-- EntityCondition查询语句 -->
+    <sql id="select_condition_sql">
+        <foreach collection="criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+    <!-- UpdateCondition查询语句 -->
+    <sql id="update_condition_sql">
+        <foreach collection="condition.criterias" item="criteria" separator="or">
+            <trim prefix="(" suffix=")" prefixOverrides="and">
+                <foreach collection="criteria.criteria" item="criterion">
+                    <choose>
+                        <when test="criterion.noValue">
+                            and ${criterion.condition}
+                        </when>
+                        <when test="criterion.singleValue">
+                            and ${criterion.condition} #{criterion.value}
+                        </when>
+                        <when test="criterion.betweenValue">
+                            and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                        </when>
+                        <when test="criterion.listValue">
+                            and ${criterion.condition}
+                            <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                     separator=",">
+                                #{listItem}
+                            </foreach>
+                        </when>
+                    </choose>
+                </foreach>
+            </trim>
+        </foreach>
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.Favorite">
+        <id column="id" property="id"/>
+                <result column="customer_id" property="customerId"/>
+                <result column="music_id" property="musicId"/>
+                <result column="create_time" property="createTime"/>
+    </resultMap>
+    <!-- 全字段新增 -->
+    <insert id="insert" parameterType="cn.yesway.music.entity.Favorite" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{id},
+                #{customerId},
+                #{musicId},
+                #{createTime},
+        </trim>
+    </insert>
+
+    <!-- 非空字段新增 -->
+    <insert id="insertSelective" parameterType="cn.yesway.music.entity.Favorite" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="table_name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        `id`,
+                    </if>
+                    <if test="customerId != null">
+                        `customer_id`,
+                    </if>
+                    <if test="musicId != null">
+                        `music_id`,
+                    </if>
+                    <if test="createTime != null">
+                        `create_time`,
+                    </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                    <if test="id != null">
+                        #{id},
+                    </if>
+                    <if test="customerId != null">
+                        #{customerId},
+                    </if>
+                    <if test="musicId != null">
+                        #{musicId},
+                    </if>
+                    <if test="createTime != null">
+                        #{createTime},
+                    </if>
+        </trim>
+    </insert>
+
+    <!-- 全字段批量新增 -->
+    <insert id="insertBatch" parameterType="cn.yesway.music.entity.Favorite">
+        insert into
+        <include refid="table_name"/>
+        (
+        <include refid="column_list"/>
+        )
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                    #{item.id},
+                    #{item.customerId},
+                    #{item.musicId},
+                    #{item.createTime},
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 非空字段批量新增 -->
+    <insert id="insertBatchSelective" parameterType="cn.yesway.music.entity.Favorite">
+        insert into
+        <include refid="table_name"/>
+        <foreach collection="list" item="item" open=" " close="" separator="," index="index">
+            <if test="index == 0">
+                <trim prefix="(" suffix=")" suffixOverrides=",">
+                            <if test="item.id != null">
+                                `id`,
+                            </if>
+                            <if test="item.customerId != null">
+                                `customer_id`,
+                            </if>
+                            <if test="item.musicId != null">
+                                `music_id`,
+                            </if>
+                            <if test="item.createTime != null">
+                                `create_time`,
+                            </if>
+                </trim>
+            </if>
+        </foreach>
+        values
+        <foreach collection="list" item="item" open=" " close=""
+                 separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="item.id != null">
+                            #{item.id},
+                        </if>
+                        <if test="item.customerId != null">
+                            #{item.customerId},
+                        </if>
+                        <if test="item.musicId != null">
+                            #{item.musicId},
+                        </if>
+                        <if test="item.createTime != null">
+                            #{item.createTime},
+                        </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 根据Id全字段修改 -->
+    <update id="updateByPrimaryKey" parameterType="cn.yesway.music.entity.Favorite">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `customer_id` = #{customerId},
+                    `music_id` = #{musicId},
+                    `create_time` = #{createTime}
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据Id非空字段修改 -->
+    <update id="updateByPrimaryKeySelective" parameterType="cn.yesway.music.entity.Favorite">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="customerId != null">
+                        `customer_id` = #{customerId},
+                    </if>
+                    <if test="musicId != null">
+                        `music_id` = #{musicId},
+                    </if>
+                    <if test="createTime != null">
+                        `create_time` = #{createTime}
+                    </if>
+        </set>
+        <where>id = #{id}</where>
+    </update>
+
+    <!-- 根据条件全字段修改 -->
+    <update id="updateByCondition" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    `customer_id` = #{entity.customerId},
+                    `music_id` = #{entity.musicId},
+                    `create_time` = #{entity.createTime}
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据条件非空字段修改 -->
+    <update id="updateByConditionSelective" parameterType="map">
+        update
+        <include refid="table_name"/>
+        <set>
+                    <if test="entity.customerId != null">
+                        `customer_id` = #{entity.customerId},
+                    </if>
+                    <if test="entity.musicId != null">
+                        `music_id` = #{entity.musicId},
+                    </if>
+                    <if test="entity.createTime != null">
+                        `create_time` = #{entity.createTime}
+                    </if>
+        </set>
+        <where>
+            <if test="condition != null">
+                <include refid="update_condition_sql"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </delete>
+
+    <!-- 根据主键批量删除 -->
+    <delete id="deleteByPrimaryKeys" parameterType="java.lang.String">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 根据条件删除 -->
+    <delete id="deleteByCondition" parameterType="cn.yesway.music.entity.FavoriteCondition">
+        delete from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </delete>
+
+    <!-- 根据主键查找 -->
+    <select id="selectByPrimaryKey" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>`id` = #{id}</where>
+    </select>
+
+    <!-- 根据多个主键查找 -->
+    <select id="selectByPrimaryKeys" resultMap="resultMap" parameterType="java.lang.String">
+        select
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            `id`
+            <foreach collection="array" item="id" open="in (" close=")"
+                     separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+
+    <!-- 根据查询条件查找 -->
+    <select id="selectByCondition" resultMap="resultMap" parameterType="cn.yesway.music.entity.FavoriteCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="column_list"/>
+        from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+        <if test="orderBy != null and orderBy != ''" >
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <!-- 根据查询条件查询数量 -->
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="cn.yesway.music.entity.FavoriteCondition">
+        select count(0) from
+        <include refid="table_name"/>
+        <where>
+            <include refid="select_condition_sql"/>
+        </where>
+    </select>
+
+</mapper>

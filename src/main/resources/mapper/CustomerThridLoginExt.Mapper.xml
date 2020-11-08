@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.CustomerThridLoginExtRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> customer_thrid_login </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            id, 
+            open_id, 
+            type
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.CustomerThridLogin">
+        <id column="id" property="id"/>
+        <result column="open_id" property="openId"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+</mapper>

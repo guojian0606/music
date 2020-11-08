@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.yesway.music.repository.impl.FavoriteExtRepositoryImpl">
+    <!-- 表名 -->
+    <sql id="table_name"> favorite </sql>
+    <!-- 列名 -->
+    <sql id="column_list">
+            id, 
+            customer_id, 
+            music_id, 
+            create_time
+    </sql>
+
+    <!-- ORM映射关系 -->
+    <resultMap id="resultMap" type="cn.yesway.music.entity.Favorite">
+        <id column="id" property="id"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="music_id" property="musicId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+</mapper>
